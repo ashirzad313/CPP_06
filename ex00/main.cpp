@@ -6,7 +6,7 @@
 /*   By: ashirzad <ashirzad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:28:38 by ashirzad          #+#    #+#             */
-/*   Updated: 2024/10/31 13:33:24 by ashirzad         ###   ########.fr       */
+/*   Updated: 2024/11/01 17:45:37 by ashirzad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,11 @@ int main(int args, char **argv)
 		std::cout << "Invalid args" << std::endl;
 		return (-1);
 	}
-	ScalarConverter::convert(argv[1]);
+	try {
+		ScalarConverter::convert(argv[1]);
+	}
+	catch (std::exception &e){
+		std::cout << e.what() << std::endl;
+	}
 	return (0);
 }

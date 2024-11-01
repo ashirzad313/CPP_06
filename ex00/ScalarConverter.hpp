@@ -6,7 +6,7 @@
 /*   By: ashirzad <ashirzad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:22:27 by ashirzad          #+#    #+#             */
-/*   Updated: 2024/11/01 14:36:25 by ashirzad         ###   ########.fr       */
+/*   Updated: 2024/11/01 18:05:09 by ashirzad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,15 +18,20 @@
 #include <string>
 #include <sstream>
 #include <algorithm>
+#include <iomanip>
 
 class ScalarConverter
 {
 	private	:
-		std::string _value;
-		char		_c;
-		int			_i;
-		float		_f;
-		double		_d;
+		int		_i;
+		double	_d;
+		float	_f;
+		char	_c;
+		bool	_isError;
+		bool	_isInt;
+		bool	_isDouble;
+		bool	_isFloat;
+		bool	_isChar;
 	public :
 		// Orthodox Canonical Form
 		ScalarConverter(void);
@@ -36,12 +41,37 @@ class ScalarConverter
 
 
 		// methods
-		static std::string	detect_type(std::string value);
+		int	isInt(std::string value);
+		int	isFloat(std::string value);
+		int	isDouble(std::string value);
+		int	isChar(std::string value);
+		void detect_type(std::string value);
 		static void convert(std::string value);
+
+		// to methods
+		void	toChar();
+		void	toInt();
+		void	toFloat(std::string value);
+		void	toDouble(std::string value);
 
 		// object error
 
-		class InvalidType : public std::exception
+		class CharError : public std::exception
+		{
+			public :
+				virtual const char *what(void) const throw();
+		};
+		class IntError : public std::exception
+		{
+			public :
+				virtual const char *what(void) const throw();
+		};
+		class DoubleError : public std::exception
+		{
+			public :
+				virtual const char *what(void) const throw();
+		};
+		class FloatError : public std::exception
 		{
 			public :
 				virtual const char *what(void) const throw();
