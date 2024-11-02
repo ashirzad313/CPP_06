@@ -6,7 +6,7 @@
 /*   By: ashirzad <ashirzad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:22:27 by ashirzad          #+#    #+#             */
-/*   Updated: 2024/11/01 18:05:09 by ashirzad         ###   ########.fr       */
+/*   Updated: 2024/11/02 16:41:43 by ashirzad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,18 +20,27 @@
 #include <algorithm>
 #include <iomanip>
 
+#define ft_error -1
+#define ft_char 1
+#define ft_int 2
+#define ft_float 3
+#define ft_double 4
+
+
+
 class ScalarConverter
 {
 	private	:
-		int		_i;
-		double	_d;
-		float	_f;
-		char	_c;
-		bool	_isError;
-		bool	_isInt;
-		bool	_isDouble;
-		bool	_isFloat;
-		bool	_isChar;
+		std::string _input;
+		int			_i;
+		int			_intFlag;
+		double		_d;
+		int			_doubleFlag;
+		float		_f;
+		int			_floatFlag;
+		char		_c;
+		int			_charFlag;
+		int			_type;
 	public :
 		// Orthodox Canonical Form
 		ScalarConverter(void);
@@ -41,22 +50,36 @@ class ScalarConverter
 
 
 		// methods
-		int	isInt(std::string value);
-		int	isFloat(std::string value);
-		int	isDouble(std::string value);
-		int	isChar(std::string value);
-		void detect_type(std::string value);
-		static void convert(std::string value);
-
-		// to methods
+		int	isInt(void);
+		int	isFloat(void);
+		int	isDouble(void);
+		int	isChar(void);
 		void	toChar();
 		void	toInt();
-		void	toFloat(std::string value);
-		void	toDouble(std::string value);
+		void	toFloat();
+		void	toDouble();
+		void detect_type(void);
+		static void convert(std::string value);
+
+		// getters
+		int		getInt(void);
+		char	getChar(void);
+		float	getFloat(void);
+		double	getDouble(void);
+		int		getIntFlag(void);
+		int		getCharFlag(void);
+		int		getFloatFlag(void);
+		int		getDoubleFlag(void);
+
 
 		// object error
 
 		class CharError : public std::exception
+		{
+			public :
+				virtual const char *what(void) const throw();
+		};
+		class CharError2 : public std::exception
 		{
 			public :
 				virtual const char *what(void) const throw();
@@ -76,8 +99,9 @@ class ScalarConverter
 			public :
 				virtual const char *what(void) const throw();
 		};
-
 };
+
+std::ostream &operator<<(std::ostream &str, ScalarConverter &converter);
 
 #endif // __SCALARCONVERTER_HPP__ //
 

@@ -6,7 +6,7 @@
 /*   By: ashirzad <ashirzad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:26:40 by ashirzad          #+#    #+#             */
-/*   Updated: 2024/11/01 18:09:17 by ashirzad         ###   ########.fr       */
+/*   Updated: 2024/11/02 17:07:15 by ashirzad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,130 +14,20 @@
 
 //Orthodox Canonical Form
 
-ScalarConverter::ScalarConverter(void): _isError(0), _isInt(0), _isDouble(0), _isFloat(0),_isChar(0)  {}
+ScalarConverter::ScalarConverter(void){}
 
-ScalarConverter::ScalarConverter(ScalarConverter &copy): _isError(0), _isInt(0), _isDouble(0), _isFloat(0),_isChar(0)
-{
-	*this = copy;
-}
+ScalarConverter::ScalarConverter(ScalarConverter &copy){*this = copy;}
 
 ScalarConverter &ScalarConverter::operator=(ScalarConverter &other)
 {
 	if (this == &other)
 		return (*this);
-	// assign vars
 	return (*this);
 }
 
 ScalarConverter::~ScalarConverter(void){}
 
 // methods
-
-int	ScalarConverter::isInt(std::string value)
-{
-	for (int i = 0; i < (int)value.length(); i++)
-	{
-		if (value[i] < '0' || value[i] > '9')
-			return (-1);
-	}
-	return (0);
-}
-
-int	ScalarConverter::isDouble(std::string value)
-{
-	int dot_count = std::count(value.begin(), value.end(), '.');
-	if (dot_count != 1)
-		return (-1);
-	for (int i = 0; i < (int)value.length(); i++)
-	{
-		if ((value[i] < '0' || value[i] > '9') && value[i] != '.')
-			return (-1);
-	}
-	return (0);
-}
-
-int	ScalarConverter::isFloat(std::string value)
-{
-	int dot_count = std::count(value.begin(), value.end(), '.');
-	int	f_count = std::count(value.begin(), value.end(), 'f');
-	if (dot_count != 1 || f_count > 1)
-		return (-1);
-	for (int i = 0; i < (int)value.length(); i++)
-	{
-		if ((value[i] < '0' || value[i] > '9') && (value[i] != '.' && value[i] != 'f'))
-			return (-1);
-	}
-	return (0);
-}
-
-int ScalarConverter::isChar(std::string value)
-{
-	if (value.length() > 1)
-		return (-1);
-	return (0);
-}
-
-void ScalarConverter::detect_type(std::string value)
-{
-	if (this->isInt(value) != -1)
-	{
-		this->_i = std::stoi(value);
-		this->_isInt = 1;
-	}
-	else if (this->isDouble(value) != -1)
-	{
-		this->_d = std::stod(value);
-		this->_isDouble = 1;
-	}
-	else if (this->isFloat(value) != -1)
-	{
-		this->_f = std::stof(value);
-		this->_isFloat = 1;
-	}
-	else if (this->isChar(value) != -1)
-	{
-		this->_c = (char)value[0];
-		this->_isChar = 1;
-	}
-	else
-		this->_isError = 1;
-}
-
-// To Methods
-void	ScalarConverter::toChar()
-{
-	int	n = 32;
-	if (this->_isError)
-		throw CharError();
-	else if (this->_isChar == 1)
-		n = (int)this->_c;
-	else if (this->_isInt == 1)
-		n = this->_i;
-	else if (this->_isDouble == 1)
-		n = (int)this->_d;
-	else if (this->_isFloat == 1)
-		n = (int)this->_f;
-	if (n < 32 || n > 126)
-		throw CharError();
-	char	c = (char)n;
-	std::cout << "char : '" << c << "'" << std::endl;
-}
-
-void	ScalarConverter::toInt()
-{
-	int n = 0;
-	if (this->_isError)
-		throw IntError();
-	else if (this->_isInt == 1)
-		n = (int)this->_i;
-	else if (this->_isChar == 1)
-		n = (int)this->_c;
-	else if (this->_isDouble == 1)
-		n = (int)this->_d;
-	else if (this->_isFloat == 1)
-		n = (int)this->_f;
-	std::cout << "int : " << n << std::endl;
-}
 
 int	count_decimals(std::string value)
 {
@@ -155,74 +45,141 @@ int	count_decimals(std::string value)
 	return (count);
 }
 
-void	ScalarConverter::toDouble(std::string value)
+void	ScalarConverter::toInt()
 {
-	double n = 0;
-	int		perc = 1;
-	if (this->_isError)
-		throw DoubleError();
-	else if (this->_isInt == 1)
-		n = (double)this->_i;
-	else if (this->_isChar == 1)
-		n = (double)this->_c;
-	else if (this->_isDouble == 1)
-		n = (double)this->_d;
-	else if (this->_isFloat == 1)
-		n = (double)this->_f;
-
-	if (this->_isDouble == 1 || this->_isFloat == 1)
-		perc = count_decimals(value);
-	std::cout << std::fixed << std::setprecision(perc) << "double : " << n << std::endl;
+	if (this->_type == ft_error)
+	{
+		this->_intFlag = 1;
+		return ;
+	}
+	if (this->_type == ft_int)
+	{
+		this->_intFlag = 0;	
+		return ;
+	}
+	else if (this->_type == ft_char)
+		this->_i = (int)this->_c;
+	else if (this->_type == ft_double)
+		this->_i = (int)this->_d;
+	else if (this->_type == ft_float)
+		this->_i = (int)this->_f;
+	this->_intFlag = 0;
 }
 
-void	ScalarConverter::toFloat(std::string value)
+void	ScalarConverter::toDouble(void)
 {
-	float n = 0;
-	int		perc = 1;
-	if (this->_isError)
-		throw FloatError();
-	else if (this->_isInt == 1)
-		n = (float)this->_i;
-	else if (this->_isChar == 1)
-		n = (float)this->_c;
-	else if (this->_isDouble == 1)
-		n = (float)this->_d;
-	else if (this->_isFloat == 1)
-		n = (float)this->_f;
+	if (this->_type == ft_error)
+	{
+		this->_doubleFlag = 1;
+		return ;
+	}
+	if (this->_type == ft_double)
+	{
+		this->_doubleFlag = 0;
+		return ;
+	}
+	else if (this->_type == ft_int)
+		this->_d = (double)this->_i;
+	else if (this->_type == ft_char)
+		this->_d = (double)this->_c;
+	else if (this->_type == ft_float)
+		this->_d = (double)this->_f;
+	this->_doubleFlag = 0;
+}
 
-	if (this->_isDouble == 1 || this->_isFloat == 1)
-		perc = count_decimals(value);
-	std::cout << std::fixed << std::setprecision(perc) << "float : " << n << "f" << std::endl;
+void	ScalarConverter::toFloat()
+{
+	if (this->_type == ft_error)
+	{
+		this->_floatFlag = 1;
+		return ;
+	}
+	else if (this->_type == ft_float)
+	{
+		this->_floatFlag = 0;
+		return ;
+	}
+	else if (this->_type == ft_int)
+		this->_f = (float)this->_i;
+	else if (this->_type == ft_char)
+		this->_f = (float)this->_c;
+	else if (this->_type == ft_double)
+		this->_f = (float)this->_d;
+	this->_floatFlag = 0;
+}
+
+void	ScalarConverter::toChar()
+{
+	int	n = 32;
+	int types[3] = {ft_int, ft_float, ft_double};
+	int values[3] = {this->_i, (int)this->_f, (int)this->_d};
+	if (this->_type == ft_error)
+	{
+		this->_charFlag = 1;
+		return ;
+	}
+	for (int i = 0; i < 3; i++)
+	{
+		if (this->_type == types[i])
+		{
+			n = values[i];
+			if ((n >= 0 && n <= 31) || n == 127)
+			{
+				this->_charFlag = 2;
+				return ;
+			}
+			else if (n < 32 || n > 126)
+			{
+				this->_charFlag = 1;
+				return ;
+			}
+			this->_c = (char)n;
+			this->_charFlag = 0;
+			return ;
+		}
+	}
+	this->_charFlag = 0;
+}
+
+void ScalarConverter::detect_type()
+{
+	if (this->isInt() != -1)
+	{
+		this->_i = std::stoi(this->_input);
+		this->_type = ft_int;
+	}
+	else if (this->isDouble() != -1)
+	{
+		this->_d = std::stod(this->_input);
+		this->_type = ft_double;
+	}
+	else if (this->isFloat() != -1)
+	{
+		this->_f = std::stof(this->_input);
+		this->_type = ft_float;
+	}
+	else if (this->isChar() != -1)
+	{
+		this->_c = (char)this->_input[0];
+		this->_type = ft_char;
+	}
+	else
+		this->_type = ft_error;
 }
 
 void	ScalarConverter::convert(std::string value)
 {
 	ScalarConverter converter;
-	converter.detect_type(value);
-	try {
-		converter.toChar();
-	}
-	catch (std::exception &e){
-		std::cout << e.what() << std::endl;
-	}
-	try {
-		converter.toInt();
-	}
-	catch (std::exception &e){
-		std::cout << e.what() << std::endl;
-	}
-	try {
-		converter.toFloat(value);
-	}
-	catch (std::exception &e){
-		std::cout << e.what() << std::endl;
-	}
-	try {
-		converter.toDouble(value);
-	}
-	catch (std::exception &e){
-		std::cout << e.what() << std::endl;
-	}
+
+	converter._input = value;
+	converter.detect_type();
+	
+	converter.toChar();
+	converter.toInt();
+	converter.toFloat();
+	converter.toDouble();
+
+	std::cout << converter << std::endl;
 }
 
 // object errors
@@ -230,6 +187,11 @@ void	ScalarConverter::convert(std::string value)
 const char *ScalarConverter::CharError::what(void) const throw()
 {
 	return ("char : impossible");
+}
+
+const char *ScalarConverter::CharError2::what(void) const throw()
+{
+	return ("char : Non displayable");
 }
 
 const char *ScalarConverter::IntError::what(void) const throw()
@@ -246,3 +208,43 @@ const char *ScalarConverter::DoubleError::what(void) const throw()
 {
 	return ("double : nan");
 }
+
+// setter
+
+
+std::ostream &operator<<(std::ostream &str, ScalarConverter &converter)
+{
+	std::string char_str;
+	std::string int_str;
+	std::string float_str;
+	std::string double_str;
+
+	if (converter.getCharFlag() == 0)
+		char_str = "'" + std::string(1, converter.getChar()) + "'";
+	else if (converter.getCharFlag() == 1)
+		char_str = "impossible" ;
+	else if (converter.getCharFlag() == 2)
+		char_str = "Non displayable" ;
+
+	if (converter.getIntFlag() == 0)
+		int_str = std::to_string(converter.getInt());
+	else
+		int_str = "impossible";
+	
+	if (converter.getFloatFlag() == 0)
+		float_str = std::to_string(converter.getFloat()) + "f";
+	else
+		float_str = "nanf";
+	
+	if (converter.getDoubleFlag() == 0)
+		double_str = std::to_string(converter.getDouble());
+	else
+		double_str = "nan";
+	
+	str << "char : " << char_str << std::endl \
+	<< "int : " << int_str << std::endl \
+	<< "float : " << float_str << std::endl \
+	<< "double : " << double_str; 
+	return (str);
+}
+
