@@ -6,7 +6,7 @@
 /*   By: ashirzad <ashirzad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:26:40 by ashirzad          #+#    #+#             */
-/*   Updated: 2024/11/02 17:07:15 by ashirzad         ###   ########.fr       */
+/*   Updated: 2024/11/04 20:42:24 by ashirzad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 //Orthodox Canonical Form
 
-ScalarConverter::ScalarConverter(void){}
+ScalarConverter::ScalarConverter(void): _charFlag(0), _intFlag(0), _floatFlag(0), _doubleFlag(0){}
 
 ScalarConverter::ScalarConverter(ScalarConverter &copy){*this = copy;}
 
@@ -29,83 +29,152 @@ ScalarConverter::~ScalarConverter(void){}
 
 // methods
 
-int	count_decimals(std::string value)
+void ScalarConverter::detect_type()
 {
-	int	count = 0;
-
-	for (int i = 0; i < (int)value.length(); i++)
+	if (this->isInt() != -1)
 	{
-		if (value[i] == '.')
-			count += 1;
-		else if (count)
-			count += 1;
+		this->_i = std::stoi(this->_input);
+		this->_type = ft_int;
 	}
-	if (count > 1)
-		count -= 1;
-	return (count);
+	else if (this->isDouble() != -1)
+	{
+		this->_d = std::stod(this->_input);
+		this->_type = ft_double;
+	}
+	else if (this->isFloat() != -1)
+	{
+		this->_f = std::stof(this->_input);
+		this->_type = ft_float;
+	}
+	else if (this->isChar() != -1)
+	{
+		this->_c = (char)this->_input[0];
+		this->_type = ft_char;
+	}
+	else
+		this->_type = ft_error;
 }
+
+void	ScalarConverter::convert(std::string value)
+{
+	ScalarConverter converter;
+
+	void (ScalarConverter::*complain[4])(void) = {&ScalarConverter::toChar, &ScalarConverter::toInt, \
+		&ScalarConverter::toFloat, &ScalarConverter::toDouble};
+	converter._input = value;
+	converter.detect_type();
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (i != converter._type)
+			(converter.*complain[i])();
+	}
+	std::cout << converter << std::endl;
+}
+
+int	ScalarConverter::isInt()
+{
+	for (int i = 0; i < (int)this->_input.length(); i++)
+	{
+		if (this->_input[i] < '0' || this->_input[i] > '9')
+			return (-1);
+	}
+	return (0);
+}
+
+int	ScalarConverter::isDouble()
+{
+	int dot_count = std::count(this->_input.begin(), this->_input.end(), '.');
+	if (dot_count != 1)
+		return (-1);
+	for (int i = 0; i < (int)this->_input.length(); i++)
+	{
+		if ((this->_input[i] < '0' || this->_input[i] > '9') && this->_input[i] != '.')
+			return (-1);
+	}
+	return (0);
+}
+
+int	ScalarConverter::isFloat()
+{
+	int dot_count = std::count(this->_input.begin(), this->_input.end(), '.');
+	int	f_count = std::count(this->_input.begin(), this->_input.end(), 'f');
+	if (dot_count != 1 || f_count > 1)
+		return (-1);
+	for (int i = 0; i < (int)this->_input.length(); i++)
+	{
+		if ((this->_input[i] < '0' || this->_input[i] > '9') && (this->_input[i] != '.' && this->_input[i] != 'f'))
+			return (-1);
+	}
+	return (0);
+}
+
+int ScalarConverter::isChar()
+{
+	if (this->_input.length() > 1)
+		return (-1);
+	return (0);
+}
+
 
 void	ScalarConverter::toInt()
 {
+	int types[3] = {ft_char, ft_float, ft_double};
+	int values[3] = {(int)this->_c, (int)this->_f, (int)this->_d};
 	if (this->_type == ft_error)
 	{
 		this->_intFlag = 1;
 		return ;
 	}
-	if (this->_type == ft_int)
+	for (int i = 0; i < 3; i++)
 	{
-		this->_intFlag = 0;	
-		return ;
+		if (this->_type == types[i])
+		{
+			this->_i = values[i];
+			this->_intFlag = 0;
+			return ;
+		}
 	}
-	else if (this->_type == ft_char)
-		this->_i = (int)this->_c;
-	else if (this->_type == ft_double)
-		this->_i = (int)this->_d;
-	else if (this->_type == ft_float)
-		this->_i = (int)this->_f;
-	this->_intFlag = 0;
 }
 
 void	ScalarConverter::toDouble(void)
 {
+	int types[3] = {ft_char, ft_int, ft_float};
+	double values[3] = {(double)this->_c, (double)this->_i, (double)this->_f};
 	if (this->_type == ft_error)
 	{
 		this->_doubleFlag = 1;
 		return ;
 	}
-	if (this->_type == ft_double)
+	for (int i = 0; i < 3; i++)
 	{
-		this->_doubleFlag = 0;
-		return ;
+		if (this->_type == types[i])
+		{
+			this->_d = values[i];
+			this->_doubleFlag = 0;
+			return ;
+		}
 	}
-	else if (this->_type == ft_int)
-		this->_d = (double)this->_i;
-	else if (this->_type == ft_char)
-		this->_d = (double)this->_c;
-	else if (this->_type == ft_float)
-		this->_d = (double)this->_f;
-	this->_doubleFlag = 0;
 }
 
 void	ScalarConverter::toFloat()
 {
+	int types[3] = {ft_char, ft_int, ft_double};
+	float values[3] = {(float)this->_c, (float)this->_i, (float)this->_d};
 	if (this->_type == ft_error)
 	{
 		this->_floatFlag = 1;
 		return ;
 	}
-	else if (this->_type == ft_float)
+	for (int i = 0; i < 3; i++)
 	{
-		this->_floatFlag = 0;
-		return ;
+		if (this->_type == types[i])
+		{
+			this->_f = values[i];
+			this->_floatFlag = 0;
+			return ;
+		}
 	}
-	else if (this->_type == ft_int)
-		this->_f = (float)this->_i;
-	else if (this->_type == ft_char)
-		this->_f = (float)this->_c;
-	else if (this->_type == ft_double)
-		this->_f = (float)this->_d;
-	this->_floatFlag = 0;
 }
 
 void	ScalarConverter::toChar()
@@ -138,113 +207,119 @@ void	ScalarConverter::toChar()
 			return ;
 		}
 	}
-	this->_charFlag = 0;
 }
 
-void ScalarConverter::detect_type()
+//getters
+
+std::string ScalarConverter::getInput(void)
 {
-	if (this->isInt() != -1)
+	return (this->_input);
+}
+
+int ScalarConverter::getInt(void)
+{
+	return (this->_i);
+}
+
+char ScalarConverter::getChar(void)
+{
+	return (this->_c);
+}
+
+float ScalarConverter::getFloat(void)
+{
+	return (this->_f);
+}
+
+double ScalarConverter::getDouble(void)
+{
+	return (this->_d);
+}
+
+int ScalarConverter::getType(void)
+{
+	return (this->_type);
+}
+
+int ScalarConverter::getIntFlag(void)
+{
+    return (this->_intFlag);
+}
+int ScalarConverter::getCharFlag(void)
+{
+	return (this->_charFlag);
+}
+
+int ScalarConverter::getDoubleFlag(void)
+{
+	return (this->_doubleFlag);
+}
+
+int ScalarConverter::getFloatFlag(void)
+{
+	return (this->_floatFlag);
+}
+
+
+
+int	count_decimals(std::string value)
+{
+	int	count = 0;
+
+	for (int i = 0; i < (int)value.length(); i++)
 	{
-		this->_i = std::stoi(this->_input);
-		this->_type = ft_int;
+		if (value[i] == '.')
+			count += 1;
+		else if (count && value[i] != 'f')
+			count += 1;
 	}
-	else if (this->isDouble() != -1)
-	{
-		this->_d = std::stod(this->_input);
-		this->_type = ft_double;
-	}
-	else if (this->isFloat() != -1)
-	{
-		this->_f = std::stof(this->_input);
-		this->_type = ft_float;
-	}
-	else if (this->isChar() != -1)
-	{
-		this->_c = (char)this->_input[0];
-		this->_type = ft_char;
-	}
-	else
-		this->_type = ft_error;
+	if (count > 1)
+		count -= 1;
+	return (count);
 }
-
-void	ScalarConverter::convert(std::string value)
-{
-	ScalarConverter converter;
-
-	converter._input = value;
-	converter.detect_type();
-	
-	converter.toChar();
-	converter.toInt();
-	converter.toFloat();
-	converter.toDouble();
-
-	std::cout << converter << std::endl;
-}
-
-// object errors
-
-const char *ScalarConverter::CharError::what(void) const throw()
-{
-	return ("char : impossible");
-}
-
-const char *ScalarConverter::CharError2::what(void) const throw()
-{
-	return ("char : Non displayable");
-}
-
-const char *ScalarConverter::IntError::what(void) const throw()
-{
-	return ("int : impossible");
-}
-
-const char *ScalarConverter::FloatError::what(void) const throw()
-{
-	return ("float : nanf");
-}
-
-const char *ScalarConverter::DoubleError::what(void) const throw()
-{
-	return ("double : nan");
-}
-
-// setter
-
 
 std::ostream &operator<<(std::ostream &str, ScalarConverter &converter)
 {
-	std::string char_str;
-	std::string int_str;
-	std::string float_str;
-	std::string double_str;
+	std::string char_str = "";
+	std::string int_str = "";
+	std::string float_str = "";
+	std::string double_str = "";
 
-	if (converter.getCharFlag() == 0)
-		char_str = "'" + std::string(1, converter.getChar()) + "'";
-	else if (converter.getCharFlag() == 1)
+
+	int count = 1;
+	if (converter.getType() == ft_float || converter.getType() == ft_double)
+		count = count_decimals(converter.getInput());
+
+	if (converter.getCharFlag() == 1)
 		char_str = "impossible" ;
 	else if (converter.getCharFlag() == 2)
-		char_str = "Non displayable" ;
-
-	if (converter.getIntFlag() == 0)
-		int_str = std::to_string(converter.getInt());
-	else
+		char_str = "Non displayable";
+	if (converter.getIntFlag() == 1)
 		int_str = "impossible";
-	
-	if (converter.getFloatFlag() == 0)
-		float_str = std::to_string(converter.getFloat()) + "f";
-	else
+	if (converter.getFloatFlag() == 1)
 		float_str = "nanf";
-	
-	if (converter.getDoubleFlag() == 0)
-		double_str = std::to_string(converter.getDouble());
-	else
+	if (converter.getDoubleFlag() == 1)
 		double_str = "nan";
-	
-	str << "char : " << char_str << std::endl \
-	<< "int : " << int_str << std::endl \
-	<< "float : " << float_str << std::endl \
-	<< "double : " << double_str; 
+
+	if (char_str == "")
+		str << "char : '" << converter.getChar() << "'" << std::endl;
+	else
+		str << "char : " << char_str << std::endl;
+
+	if (int_str == "")
+		str << "int : " << converter.getInt() << std::endl;
+	else
+		str << "int : " << int_str << std::endl;
+
+	if (float_str == "")
+		str << std::fixed << std::setprecision(count) << "float : " << converter.getFloat() << "f" << std::endl;
+	else
+		str << "float : " << float_str << std::endl;
+
+	if (double_str == "")
+		str << std::fixed << std::setprecision(count) << "double : " << converter.getDouble();
+	else
+		str << "double : " << double_str;
+
 	return (str);
 }
-

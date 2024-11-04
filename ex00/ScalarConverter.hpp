@@ -6,7 +6,7 @@
 /*   By: ashirzad <ashirzad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:22:27 by ashirzad          #+#    #+#             */
-/*   Updated: 2024/11/02 16:41:43 by ashirzad         ###   ########.fr       */
+/*   Updated: 2024/11/04 20:24:25 by ashirzad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,10 @@
 #include <iomanip>
 
 #define ft_error -1
-#define ft_char 1
-#define ft_int 2
-#define ft_float 3
-#define ft_double 4
+#define ft_char 0
+#define ft_int 1
+#define ft_float 2
+#define ft_double 3
 
 
 
@@ -32,14 +32,14 @@ class ScalarConverter
 {
 	private	:
 		std::string _input;
-		int			_i;
-		int			_intFlag;
-		double		_d;
-		int			_doubleFlag;
-		float		_f;
-		int			_floatFlag;
 		char		_c;
+		int			_i;
+		float		_f;
+		double		_d;
 		int			_charFlag;
+		int			_intFlag;
+		int			_floatFlag;
+		int			_doubleFlag;
 		int			_type;
 	public :
 		// Orthodox Canonical Form
@@ -62,43 +62,16 @@ class ScalarConverter
 		static void convert(std::string value);
 
 		// getters
-		int		getInt(void);
-		char	getChar(void);
-		float	getFloat(void);
-		double	getDouble(void);
-		int		getIntFlag(void);
-		int		getCharFlag(void);
-		int		getFloatFlag(void);
-		int		getDoubleFlag(void);
-
-
-		// object error
-
-		class CharError : public std::exception
-		{
-			public :
-				virtual const char *what(void) const throw();
-		};
-		class CharError2 : public std::exception
-		{
-			public :
-				virtual const char *what(void) const throw();
-		};
-		class IntError : public std::exception
-		{
-			public :
-				virtual const char *what(void) const throw();
-		};
-		class DoubleError : public std::exception
-		{
-			public :
-				virtual const char *what(void) const throw();
-		};
-		class FloatError : public std::exception
-		{
-			public :
-				virtual const char *what(void) const throw();
-		};
+		std::string	getInput(void);
+		int			getInt(void);
+		char		getChar(void);
+		float		getFloat(void);
+		double		getDouble(void);
+		int			getType(void);
+		int			getIntFlag(void);
+		int			getCharFlag(void);
+		int			getFloatFlag(void);
+		int			getDoubleFlag(void);
 };
 
 std::ostream &operator<<(std::ostream &str, ScalarConverter &converter);
