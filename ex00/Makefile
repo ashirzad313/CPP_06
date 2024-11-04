@@ -8,6 +8,7 @@ NAME = convert
 
 all: $(NAME)
 
+
 $(NAME): $(OBJ)
 	$(CC) $(CPPFLAGS) $(OBJ) -o $(NAME)
 
