@@ -1,13 +1,12 @@
-SRC = main.cpp ScalarConverter.cpp
+SRC = main.cpp Base.cpp
 OBJ = $(SRC:.cpp=.o)
 CC = c++
 RM = rm -f
 CPPFLAGS = -Wall -Wextra -Werror -std=c++17
 
-NAME = convert
+NAME = ./run
 
 all: $(NAME)
-
 
 $(NAME): $(OBJ)
 	$(CC) $(CPPFLAGS) $(OBJ) -o $(NAME)

@@ -1,29 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   B.hpp                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ashirzad <ashirzad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/31 13:28:38 by ashirzad          #+#    #+#             */
-/*   Updated: 2024/11/05 09:50:09 by ashirzad         ###   ########.fr       */
+/*   Created: 2024/11/05 11:55:08 by ashirzad          #+#    #+#             */
+/*   Updated: 2024/11/05 11:56:32 by ashirzad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ScalarConverter.hpp"
+#pragma once
+#ifndef __B_HPP__
+#define __B_HPP__
 
-int main(int args, char **argv)
-{
-	if (args != 2)
-	{
-		std::cout << "Invalid args" << std::endl;
-		return (-1);
-	}
-	try {
-		ScalarConverter::convert(argv[1]);
-	}
-	catch (std::exception &e){
-		std::cout << e.what() << std::endl;
-	}
-	return (0);
-}
+#include "Base.hpp"
+
+
+class B : public Base {};
+
+#endif // __B_HPP__//

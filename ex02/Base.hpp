@@ -1,29 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   Base.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ashirzad <ashirzad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/31 13:28:38 by ashirzad          #+#    #+#             */
-/*   Updated: 2024/11/05 09:50:09 by ashirzad         ###   ########.fr       */
+/*   Created: 2024/11/05 11:50:55 by ashirzad          #+#    #+#             */
+/*   Updated: 2024/11/05 13:06:16 by ashirzad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ScalarConverter.hpp"
+#pragma once
+#ifndef __BASE_HPP__
+#define __BASE_HPP__
 
-int main(int args, char **argv)
+#include <iostream>
+#include <iomanip>
+#include <ctime>
+
+class Base
 {
-	if (args != 2)
-	{
-		std::cout << "Invalid args" << std::endl;
-		return (-1);
-	}
-	try {
-		ScalarConverter::convert(argv[1]);
-	}
-	catch (std::exception &e){
-		std::cout << e.what() << std::endl;
-	}
-	return (0);
-}
+	public :
+		Base(void);
+		virtual ~Base(void);
+
+		//methods
+		Base * generate(void);
+		void identify(Base* p);
+		void identify(Base& p);
+
+
+};
+
+#endif // __BASE_HPP__ //

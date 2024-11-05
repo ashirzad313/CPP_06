@@ -5,25 +5,17 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ashirzad <ashirzad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/31 13:28:38 by ashirzad          #+#    #+#             */
-/*   Updated: 2024/11/05 09:50:09 by ashirzad         ###   ########.fr       */
+/*   Created: 2024/11/05 11:50:07 by ashirzad          #+#    #+#             */
+/*   Updated: 2024/11/05 13:02:19 by ashirzad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ScalarConverter.hpp"
+#include "Base.hpp"
 
-int main(int args, char **argv)
+int main(void)
 {
-	if (args != 2)
-	{
-		std::cout << "Invalid args" << std::endl;
-		return (-1);
-	}
-	try {
-		ScalarConverter::convert(argv[1]);
-	}
-	catch (std::exception &e){
-		std::cout << e.what() << std::endl;
-	}
+	Base a;
+	Base &b = *a.generate();
+	a.identify(b);
 	return (0);
 }
